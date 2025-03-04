@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flight Search</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: #f8f8f8;
+            position: relative;
+        }
+        .logo {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            display: flex;
+            align-items: center;
+            font-size: 24px;
+            font-weight: bold;
+        }
+        .logo img {
+            width: 30px;
+            height: 30px;
+            margin-right: 10px;
+        }
+        .container {
+            display: flex;
+            width: 90%;
+            max-width: 1200px;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        .search-panel {
+            width: 40%;
+            padding: 20px;
+        }
+        .search-panel h2 {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        .search-panel label {
+            display: block;
+            margin: 10px 0 5px;
+            font-weight: bold;
+        }
+        .search-panel select,
+        .search-panel input {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .search-panel button {
+            width: 100%;
+            padding: 10px;
+            background: black;
+            color: white;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        #map {
+            width: 60%;
+            height: 500px;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="logo">
+        <img src="Screenshot 2025-03-04 125637.png" alt="Airplane"> Flight Search
+    </div>
+    <div class="container">
+        <div class="search-panel">
+            <h2>Find Flight Route</h2>
+            <label for="from">From</label>
+            <select id="from">
+                <option value="YYZ">Toronto (YYZ)</option>
+            </select>
+            
+            <label for="to">To</label>
+            <select id="to">
+                <option value="SEA">Seattle (SEA)</option>
+            </select>
+            
+            <label for="date">Travel Date</label>
+            <input type="date" id="date">
+            
+            <label for="time">Departure Time</label>
+            <input type="time" id="time">
+            
+            <button id="search-flight">Search Flight</button>
+        </div>
+        <div id="map"></div>
+    </div>
+
+    <script>
+        var map = L.map('map').setView([20, 78], 4);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; OpenStreetMap contributors'
+        }).addTo(map);
+    </script>
+</body>
+</html>
