@@ -8,8 +8,10 @@
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap');
+
         body {
-            font-family: 'Arial', sans-serif;
+            font-family: 'Orbitron', sans-serif;
             margin: 0;
             padding: 0;
             display: flex;
@@ -17,54 +19,80 @@
             align-items: center;
             height: 100vh;
             background: #f8f8f8;
-            position: relative;
         }
-        .logo {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            display: flex;
-            align-items: center;
-            font-size: 24px;
-            font-weight: bold;
-        }
-        .logo img {
-            width: 30px;
-            height: 30px;
-            margin-right: 10px;
-        }
+
         .container {
             display: flex;
-            width: 90%;
+            gap: 20px;
+            width: 80%;
             max-width: 1200px;
+        }
+
+        .flight-search-container {
+            width: 50%;
             background: white;
             padding: 20px;
             border-radius: 10px;
             box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
         }
-        .search-panel {
-            width: 40%;
-            padding: 20px;
-        }
-        .search-panel h2 {
-            font-size: 24px;
-            font-weight: bold;
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
             margin-bottom: 20px;
         }
-        .search-panel label {
-            display: block;
-            margin: 10px 0 5px;
-            font-weight: bold;
+
+        .logo img {
+            height: 30px; /* Adjust the height of the logo */
+            width: auto; /* Maintain aspect ratio */
         }
-        .search-panel select,
-        .search-panel input {
-            width: 100%;
-            padding: 8px;
-            margin-bottom: 10px;
-            border: 1px solid #ccc;
+
+        .flight-section {
+            margin-bottom: 15px;
+            padding: 15px;
+            background: #f0f0f0;
+            border-radius: 5px;
+            position: relative;
+            cursor: pointer;
+        }
+
+        #to-container {
+            background-color: #a3ff66; /* Light green background */
+            padding: 15px;
             border-radius: 5px;
         }
-        .search-panel button {
+
+        #to, #from, #date, #time {
+            font-weight: bold; /* Make dropdown text bold */
+            font-family: 'Orbitron', sans-serif;
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background: white;
+            font-size: 16px;
+            cursor: pointer;
+            appearance: none;
+            opacity: 0;
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+        }
+
+        .flight-section:hover #to,
+        .flight-section:hover #from,
+        .flight-section:hover #date,
+        .flight-section:hover #time {
+            opacity: 1;
+        }
+
+        .airport-selector, .date-selector, .time-selector {
+            pointer-events: none;
+        }
+
+        .search-flight {
             width: 100%;
             padding: 10px;
             background: black;
@@ -73,47 +101,140 @@
             border: none;
             border-radius: 5px;
             cursor: pointer;
+            margin-top: 10px;
+            font-family: 'Orbitron', sans-serif;
         }
+
         #map {
-            width: 60%;
-            height: 500px;
+            width: 100%;
+            height: 650px;
             border-radius: 10px;
+            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .current-value {
+            font-size: 14px;
+            color: #555;
+            margin-top: 5px;
+        }
+
+        .dropdown-arrow {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            pointer-events: none;
+            font-size: 16px;
+            color: #555;
         }
     </style>
 </head>
 <body>
-    <div class="logo">
-        <img src="Screenshot 2025-03-04 125637.png" alt="Airplane"> Flight Search
-    </div>
     <div class="container">
-        <div class="search-panel">
-            <h2>Find Flight Route</h2>
-            <label for="from">From</label>
-            <select id="from">
-                <option value="YYZ">Toronto (YYZ)</option>
-            </select>
+        <div class="flight-search-container">
+            <div class="logo">
+                <img src="Screenshot 2025-03-04 125637.png" alt="App Logo">
+                TEAMNAME
+            </div>
+            <h2>FIND FLIGHT ROUTE</h2>
             
-            <label for="to">To</label>
-            <select id="to">
-                <option value="SEA">Seattle (SEA)</option>
-            </select>
+            <div class="flight-section">
+                <span class="label">FROM</span>
+                <span class="label">KOCHI(COK)</span>
+                <div class="airport-selector">
+                    <select id="from">
+                        <option value="COK" selected> KOCHI(COK)</option>
+                        <option value="DEL">DELHI(DEL)</option>
+                    </select>
+                    <span class="dropdown-arrow">▼</span>
+                </div>
+            </div>
+            <div class="flight-section" id="to-container">
+                <span class="label">TO</span>
+                <span class="label">DELHI(DEL)</span>
+                <div class="airport-selector">
+                    <select id="to">
+                        <option value="DEL" selected>DELHI(DEL)</option>
+                        <option value="COK">KOCHI(COK)</option>
+                    </select>
+                    <span class="dropdown-arrow">▼</span>
+                </div>
+            </div>
             
-            <label for="date">Travel Date</label>
-            <input type="date" id="date">
+            <div class="flight-section">
+                <span class="label">TRAVEL DATE</span>
+                <div class="current-value" id="current-date"></div>
+                <div class="date-selector">
+                    <input type="date" id="date">
+                    <span class="dropdown-arrow">▼</span>
+                </div>
+            </div>
             
-            <label for="time">Departure Time</label>
-            <input type="time" id="time">
+            <div class="flight-section">
+                <span class="label">DEPARTURE TIME</span>
+                <div class="current-value" id="current-time"></div>
+                <div class="time-selector">
+                    <input type="time" id="time">
+                    <span class="dropdown-arrow">▼</span>
+                </div>
+            </div>
             
-            <button id="search-flight">Search Flight</button>
+            <button class="search-flight">Search Flight</button>
         </div>
-        <div id="map"></div>
+        
+        <div class="maps" id="map"></div>
     </div>
-
+    
     <script>
-        var map = L.map('map').setView([20, 78], 4);
+        // Initialize the map
+        var map = L.map('map').setView([10, 78], 4);
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; OpenStreetMap contributors'
         }).addTo(map);
+
+        // Function to format date as DD/MM/YYYY
+        function formatDate(date) {
+            const day = String(date.getDate()).padStart(2, '0');
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const year = date.getFullYear();
+            return `${day}/${month}/${year}`;
+        }
+
+        // Function to format time as HH:MM
+        function formatTime(date) {
+            const hours = String(date.getHours()).padStart(2, '0');
+            const minutes = String(date.getMinutes()).padStart(2, '0');
+            return `${hours}:${minutes}`;
+        }
+
+        // Set current date and time
+        const dateInput = document.getElementById('date');
+        const timeInput = document.getElementById('time');
+        const currentDateDisplay = document.getElementById('current-date');
+        const currentTimeDisplay = document.getElementById('current-time');
+
+        const now = new Date();
+        const formattedDate = formatDate(now);
+        const formattedTime = formatTime(now);
+
+        dateInput.value = now.toISOString().split('T')[0]; // Set input value in YYYY-MM-DD format
+        timeInput.value = formattedTime;
+
+        currentDateDisplay.textContent = `${formattedDate}`;
+        currentTimeDisplay.textContent = `${formattedTime}`;
+
+        // Update the displayed time every minute
+        setInterval(() => {
+            const now = new Date();
+            const formattedTime = formatTime(now);
+            currentTimeDisplay.textContent = `${formattedTime}`;
+        }, 60000); // Update every minute
     </script>
 </body>
 </html>
